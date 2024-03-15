@@ -1,12 +1,22 @@
 import re
 import os
 import sys
-def main():
-    pass
 
 import re
 
-def filter_lines(input_file, output_file):
+input_file = ""
+output_file = ""
+
+change_type = ""
+
+effect_name = ""
+filter_line = ""
+
+def effect() -> None:
+    effect_name = input("Enter the name of the effect you want to check for: ")
+    filter_line = input("Enter the exact line you want to search for: ")
+
+def filter_lines() -> None:
     with open(input_file, 'r') as f:
         lines = f.readlines()
 
@@ -28,10 +38,10 @@ if __name__ == "__main__":
         print("file does not exist!")
         sys.exit()
     output_file = input("Enter the output file path: ")
+    change_type = input("Enter the name of the change you want to filter for: ")
+    
+    if change_type == "effect":
+        effect()
 
     filter_lines(input_file, output_file)
     print("Filtered lines have been written to", output_file)
-
-
-if __name__ == "__main__":
-    main()
