@@ -3,39 +3,28 @@ import os
 import sys
 import re
 
-input_file = ""
-output_file = ""
-
-change_type = ""
-
-effect_name = ""
-filter_line = ""
-
-def effect() -> None:
+def effect(input_file : str, output_file : str) -> None:
     current_ID = ""
     current_Date = ""
+    result = ""
     effect_name = input("Enter the name of the effect you want to check for: ")
     filter_line = input("Enter the exact line you want to search for: ")
     file = open(input_file, 'r')
-    output = open(output_file, 'w')
     line = file.readline()
+    output = open(output_file, 'w')
     while (line):
         if line[0].isalpha():
-            current_ID = line
-        elif re.match(r'^(\t|\w{3})[0-9].*'):
-            current_Date = line
-        
-            
-
-                    
-                
-                
-                
-        
-        
-        
+            current_ID = line   
+        elif re.match(r'^(\t|\s{4})(\t|\s{4})effect.*', line):
+            line = file.readline()
+            if re.match(r'^(\t|\s{4})(\t|\s{4})(\t|\s{4})' + effect_name + r'.*', line):
+                line = file.readline()
+                if re.match(r'^(\t|\s{4})(\t|\s{4})(\t|\s{4})(\t|\s{4})' + filter_line + r'.*', line):
+                    line = file.readline()
+                    result = "{0}{1}\t{2}{3}\n\t\t\t\t{4}\n{5}\n\t{6}\n{7}\n\n".format(result, "character:" + current_ID, effect_name," = {", filter_line, line, "}", "}")
         line = file.readline()
     
+    output.write(result)
     file.close()
     output.close()
         
@@ -70,7 +59,7 @@ if __name__ == "__main__":
         change_type = input("Enter the name of the change you want to filter for, E.g. 'birth'\n")
     
         if change_type == "effect":
-            effect()
+            effect(input_file, output_file)
 
-    filter_lines(input_file, output_file)
+    #filter_lines(input_file, output_file)
     print("Filtered lines have been written to", output_file)
