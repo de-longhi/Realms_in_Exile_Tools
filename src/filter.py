@@ -1,3 +1,11 @@
+"""
+Filtering Script for history files of Realms in Exile
+"""
+
+# Author: Johan de Jongh (github: @de-longhi)
+
+# License: MIT
+
 import re
 import os
 import sys
@@ -5,7 +13,6 @@ import re
 
 def effect(input_file : str, output_file : str) -> None:
     current_ID = ""
-    current_Date = ""
     result = ""
     effect_name = input("Enter the name of the effect you want to check for: ")
     filter_line = input("Enter the exact line you want to search for: ")
@@ -19,9 +26,9 @@ def effect(input_file : str, output_file : str) -> None:
             line = file.readline()
             if re.match(r'^(\t|\s{4})(\t|\s{4})(\t|\s{4})' + effect_name + r'.*', line):
                 line = file.readline()
-                if re.match(r'^(\t|\s{4})(\t|\s{4})(\t|\s{4})(\t|\s{4})' + filter_line + r'.*', line):
+                if re.match(r'^(\t|\s{3}\s?)(\t|\s{3}\s?)(\t|\s{3}\s?)(\t|\s{3}\s?)' + filter_line + r'.*', line):
                     line = file.readline()
-                    result = "{0}{1}\t{2}{3}\n\t\t\t\t{4}\n{5}\n\t{6}\n{7}\n\n".format(result, "character:" + current_ID, effect_name," = {", filter_line, line, "}", "}")
+                    result = "{0}{1}\t{2}{3}\n\t\t{4}\n\t\t{5}\n\t{6}\n{7}\n\n".format(result, "character:" + current_ID, effect_name," = {", filter_line.strip(), line.strip(), "}", "}")
         line = file.readline()
     
     output.write(result)
