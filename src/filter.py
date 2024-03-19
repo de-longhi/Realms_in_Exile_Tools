@@ -24,11 +24,13 @@ def effect(input_file : str, output_file : str) -> None:
             current_ID = line   
         elif re.match(r'^(\t|\s{4})(\t|\s{4})effect.*', line):
             line = file.readline()
-            if re.match(r'^(\t|\s{4})(\t|\s{4})(\t|\s{4})' + effect_name + r'.*', line):
-                line = file.readline()
-                if re.match(r'^(\t|\s{3}\s?)(\t|\s{3}\s?)(\t|\s{3}\s?)(\t|\s{3}\s?)' + filter_line + r'.*', line):
+            while not re.match(r'(\t|\s{4})(\t|\s{4})}', line):
+                if re.match(r'^(\t|\s{4})(\t|\s{4})(\t|\s{4})' + effect_name + r'.*', line):
                     line = file.readline()
-                    result = "{0}{1}\t{2}{3}\n\t\t{4}\n\t\t{5}\n\t{6}\n{7}\n\n".format(result, "character:" + current_ID, effect_name," = {", filter_line.strip(), line.strip(), "}", "}")
+                    if re.match(r'^(\t|\s{3}\s?)(\t|\s{3}\s?)(\t|\s{3}\s?)(\t|\s{3}\s?)' + filter_line + r'.*', line):
+                        line = file.readline()
+                        result = "{0}{1}\t{2}{3}\n\t\t{4}\n\t\t{5}\n\t{6}\n{7}\n\n".format(result, "character:" + current_ID, effect_name," = {", filter_line.strip(), line.strip(), "}", "}")
+                line = file.readline()
         line = file.readline()
     
     output.write(result)
