@@ -1,5 +1,7 @@
 """
-Filtering Script for history files of Realms in Exile
+Filtering Script for history files of Realms in Exile. This script is designed to filter through 
+the history files of characters in the Realms in Exile mod of Crusader Kings 3. You may choose whether
+you want to filter for an attribute of a character or a change in attribute of a character.
 """
 
 # Author: Johan de Jongh (github: @de-longhi)
@@ -11,8 +13,35 @@ import os
 import sys
 import re
 
+def main() -> None:
+    args = sys.argv
+    if (len(args) == 1):
+        raise TypeError('Not enough arguments. Uses: "python3 src/filter.py <filepath or buffer>"')
+    
+    input_file = args[1]
+    if not os.path.exists(input_file):
+        raise FileNotFoundError("Input file not found.")
+    output_file = input("Enter the output file path: \n")
+    
+    if input("Do you want to filter for an attribute(1) or a change of attribute(2)?\n") == "1":
+        raise NotImplementedError("This functionality has not been implemented yet.")
+    else:
+        change_type = input("Enter the name of the change you want to filter for, E.g. 'birth'\n")
+    
+        if change_type == "effect":
+            effect(input_file, output_file)
+        else:
+            raise NotImplementedError("Functionality for {0} has not been implemented yet.".format(change_type))
+
+    print("Filtered lines have been written to", output_file)
+    
 def effect(input_file : str, output_file : str) -> None:
-    current_ID = ""
+    """_summary_
+
+    Args:
+        input_file (str): _description_
+        output_file (str): _description_
+    """
     result = ""
     effect_name = input("Enter the name of the effect you want to check for: ")
     filter_line = input("Enter the exact line you want to search for: ")
@@ -37,38 +66,5 @@ def effect(input_file : str, output_file : str) -> None:
     file.close()
     output.close()
         
-    
-
-def filter_lines() -> None:
-    with open(input_file, 'r') as f:
-        lines = f.readlines()
-
-    filtered_lines = []
-    for i in range(len(lines)):
-        if not re.match(r'^($|#).*', lines[i]):
-            filtered_lines.append(lines[i])
-
-    with open(output_file, 'w') as f:
-        for line in filtered_lines:
-            f.write(line)
-
 if __name__ == "__main__":
-    args = sys.argv
-    if (len(args) == 1):
-        print('Uses: "python3 filter.py <filepath or buffer>"')
-        sys.exit()
-    input_file = args[1]
-    if not os.path.exists(input_file):
-        print("file does not exist!")
-        sys.exit()
-    output_file = input("Enter the output file path: \n")
-    if input("Do you want to filter for an attribute(1) or a change of attribute(2)?\n") == 1:
-        pass
-    else:
-        change_type = input("Enter the name of the change you want to filter for, E.g. 'birth'\n")
-    
-        if change_type == "effect":
-            effect(input_file, output_file)
-
-    #filter_lines(input_file, output_file)
-    print("Filtered lines have been written to", output_file)
+   main()
