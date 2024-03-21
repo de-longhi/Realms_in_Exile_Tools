@@ -36,11 +36,11 @@ def main() -> None:
     print("Filtered lines have been written to", output_file)
     
 def effect(input_file : str, output_file : str) -> None:
-    """_summary_
+    """ This function handles all the parsing and filtering of prompts to do with effects.
 
     Args:
-        input_file (str): _description_
-        output_file (str): _description_
+        input_file (str): Filepath or buffer to the input file.
+        output_file (str): Filepath or buffer to the output file.
     """
     result = ""
     effect_name = input("Enter the name of the effect you want to check for: ")
@@ -51,14 +51,16 @@ def effect(input_file : str, output_file : str) -> None:
     while (line):
         if line[0].isalpha():
             current_ID = line   
-        elif re.match(r'^(\t|\s{4})(\t|\s{4})effect.*', line):
+        elif re.match(r'^(\t|\s{4}){2}effect = {.*}.*', line): #XXX
             line = file.readline()
-            while not re.match(r'(\t|\s{4})(\t|\s{4})}', line):
-                if re.match(r'^(\t|\s{4})(\t|\s{4})(\t|\s{4})' + effect_name + r'.*', line):
+        elif re.match(r'^(\t|\s{4}){2}effect.*', line):
+            line = file.readline()
+            while not re.match(r'(\t|\s{4}){2}' + "}" + r'.*', line):
+                if re.match(r'^(\t|\s{4}){3}' + effect_name + r'.*', line):
                     line = file.readline()
-                    if re.match(r'^(\t|\s{3}\s?)(\t|\s{3}\s?)(\t|\s{3}\s?)(\t|\s{3}\s?)' + filter_line + r'.*', line):
-                        line = file.readline()
-                        result = "{0}{1}\t{2}{3}\n\t\t{4}\n\t\t{5}\n\t{6}\n{7}\n\n".format(result, "character:" + current_ID, effect_name," = {", filter_line.strip(), line.strip(), "}", "}")
+                    if re.match(r'^(\t|\s{3}\s?){4}' + filter_line + r'.*', line):
+                        line = file.readline()                      
+                        result = "{0}{1}\tif = {{\n\t\tlimit = {{ is_alive = no }}\n\t\t{2} = {{\n\t\t\t{3}\n\t\t\t{4}\n\t\t}}\n\t}}\n}}\n\n".format(result, "character:" + current_ID, effect_name, filter_line.strip(), line.strip())
                 line = file.readline()
         line = file.readline()
     
