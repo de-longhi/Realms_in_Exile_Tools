@@ -26,9 +26,11 @@ def main() -> None:
         raise FileNotFoundError("Input file not found.")
     
     if (len(args) == 3 and args[2] == "default"):
-           
-        s = _findLastIndex(input_file, "\\")+1 if platform.system() == "Windows" else _findLastIndex(input_file, "/") + 1
-        output_file = "out/lotr_" + input_file[s:]
+        if not os.path.exists("out/"):
+            raise FileNotFoundError("There is no 'out/' folder available.")
+        
+        index = _findLastIndex(input_file, "\\")+1 if platform.system() == "Windows" else _findLastIndex(input_file, "/") + 1
+        output_file = "out/lotr_" + input_file[index:]
         effect(input_file, output_file, True)
         
     else:
@@ -75,7 +77,7 @@ def effect(input_file : str, output_file : str, default_settings : bool) -> None
     line = file.readline()
     output = open(output_file, 'w')
     while (line):
-        if line[0].isalpha():
+        if line[0].isalpha() or line[0].isnumeric():
             current_ID = line   
         elif re.match(r'^(\t|\s{4}){2}effect = {.*}.*', line): #XXX
             line = file.readline()
@@ -90,7 +92,11 @@ def effect(input_file : str, output_file : str, default_settings : bool) -> None
                 line = file.readline()
         line = file.readline()
     
+    index = _findLastIndex(input_file, "\\")+1 if platform.system() == "Windows" else _findLastIndex(input_file, "/") + 1
+    identifier = input_file[index:]
+    output.write(identifier + " = {\n")
     output.write(result)
+    output.write("}")
     file.close()
     output.close()
         
