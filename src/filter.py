@@ -93,7 +93,7 @@ def effect(input_file : str, output_file : str, default_settings : bool) -> None
         line = file.readline()
     
     index = _findLastIndex(input_file, "\\")+1 if platform.system() == "Windows" else _findLastIndex(input_file, "/") + 1
-    identifier = input_file[index:]
+    identifier = "lotr_" + input_file[index:-4]
     output.write(identifier + " = {\n")
     output.write(result)
     output.write("}")
