@@ -12,8 +12,11 @@ import re
 import os
 import sys
 import re
+import platform
+
 
 def main() -> None:
+    output_file = ""
     args = sys.argv
     if (len(args) == 1):
         raise TypeError('Not enough arguments. Uses: "python3 src/filter.py <filepath or buffer>"')
@@ -21,21 +24,36 @@ def main() -> None:
     input_file = args[1]
     if not os.path.exists(input_file):
         raise FileNotFoundError("Input file not found.")
-    output_file = input("Enter the output file path: \n")
     
-    if input("Do you want to filter for an attribute(1) or a change of attribute(2)?\n") == "1":
-        raise NotImplementedError("This functionality has not been implemented yet.")
+    if (len(args) == 3 and args[2] == "default"):
+           
+        s = _findLastIndex(input_file, "\\")+1 if platform.system() == "Windows" else _findLastIndex(input_file, "/") + 1
+        output_file = "out/lotr_" + input_file[s:]
+        effect(input_file, output_file, True)
+        
     else:
-        change_type = input("Enter the name of the change you want to filter for, E.g. 'birth'\n")
+        
+        output_file = input("Enter the output file path: \n")
+    
+        if input("Do you want to filter for an attribute(1) or a change of attribute(2)?\n") == "1":
+            raise NotImplementedError("This functionality has not been implemented yet.")
+        else:
+            change_type = input("Enter the name of the change you want to filter for, E.g. 'birth'\n")
     
         if change_type == "effect":
-            effect(input_file, output_file)
+            effect(input_file, output_file, False)
         else:
             raise NotImplementedError("Functionality for {0} has not been implemented yet.".format(change_type))
 
     print("Filtered lines have been written to", output_file)
     
-def effect(input_file : str, output_file : str) -> None:
+def _findLastIndex(str, x):
+    index = -1
+    for i in range(0, len(str)):
+        if str[i] == x:
+            index = i
+    return index
+def effect(input_file : str, output_file : str, default_settings : bool) -> None:
     """ This function handles all the parsing and filtering of prompts to do with effects.
 
     Args:
@@ -43,8 +61,16 @@ def effect(input_file : str, output_file : str) -> None:
         output_file (str): Filepath or buffer to the output file.
     """
     result = ""
-    effect_name = input("Enter the name of the effect you want to check for: ")
-    filter_line = input("Enter the exact line you want to search for: ")
+    effect_name = ""
+    filter_line = ""
+    
+    if default_settings == True:
+        effect_name = "add_trait_xp"
+        filter_line = "trait = blood_of_numenor"
+    else:
+        effect_name = input("Enter the name of the effect you want to check for: ")
+        filter_line = input("Enter the exact line you want to search for: ")
+    
     file = open(input_file, 'r')
     line = file.readline()
     output = open(output_file, 'w')
