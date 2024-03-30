@@ -12,7 +12,6 @@ import sys
 import re
 
 def main():
-    input_file = ""
     args = sys.argv
     if (len(args) != 2):
         raise TypeError('Incorrect use of arguments. Uses: "python3 src/filter.py <filepath or buffer of input file>"')
@@ -39,7 +38,7 @@ def main():
                     empty_effect_flag = True
                     line = file.readline()
                     while not re.match(r'^(\s{3}|\s{4}|\t){2}}', line):
-                        if not re.match(r'^\s*', line) and not re.match(r'^(\s{3}|\s{4}|\t){3}add_trait = blood_of_numenor_.*', line):
+                        if not re.match(r'^\s*$', line) and not re.match(r'^(\s{3}|\s{4}|\t){3}add_trait = blood_of_numenor_.*', line):
                             empty_effect_flag = False
                             temp2 += line
                         elif re.match(r'^(\s{3}|\s{4}|\t){3}add_trait = blood_of_numenor_.*', line):
